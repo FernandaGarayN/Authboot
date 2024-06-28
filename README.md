@@ -1,2 +1,5 @@
-# Authboot
-Sistema de autenticación y autorización de código abierto
+# auth-boot
+
+Auth Boot
+
+![](http://jwt.io/img/badge-compatible.svg)
