@@ -16,6 +16,7 @@ import io.cmartinezs.authboot.core.utils.property.UserServiceProperties;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -149,6 +150,22 @@ public class UserServiceAdapter implements UserServicePort {
     }
     var editedUser = userPersistence.edit(toPersistence(cmd, cryptPassword), foundUser);
     return new User(editedUser);
+  }
+
+  @Override
+  public User updateUserStatus(UpdateUserStatusCmd cmd) {
+    var foundUser = userPersistence.findByUsername(cmd.getUsername());
+    if ("DISABLED".equalsIgnoreCase(cmd.getStatus())) {
+      foundUser.setDisabledAt(LocalDateTime.now());
+      foundUser.setEnabledAt(null);
+    } else if ("ENABLED".equalsIgnoreCase(cmd.getStatus())){
+      foundUser.setEnabledAt(LocalDateTime.now());
+      foundUser.setDisabledAt(null);
+    } else {
+        throw new IllegalArgumentException("Invalid status");
+    }
+    userPersistence.editStatus(foundUser);
+    return new User(foundUser);
   }
 
   @Override

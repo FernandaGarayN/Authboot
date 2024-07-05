@@ -1,5 +1,7 @@
 package io.cmartinezs.authboot.api.endpoint;
 
+import static io.cmartinezs.authboot.api.endpoint.utils.UserControllerUtils.*;
+
 import io.cmartinezs.authboot.api.request.user.UserPatchEmailValidationRequest;
 import io.cmartinezs.authboot.api.request.user.UserPatchPasswordRecoveryRequest;
 import io.cmartinezs.authboot.api.request.user.UserPatchRequest;
@@ -14,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import static io.cmartinezs.authboot.api.endpoint.utils.UserControllerUtils.*;
 
 /**
  * This class represents a controller to handle user requests. It contains a create user endpoint
@@ -162,5 +162,25 @@ public class UserController {
       @RequestBody @Validated UserPatchEmailValidationRequest request) {
     userService.validateUser(toCmd(username, request));
     return ResponseEntity.ok().build();
+  }
+
+  @PatchMapping("/by-username/{username}/status-disabled")
+  @PreAuthorize("hasAnyRole('APP_ADM_U', 'APP_FEAT_U')")
+  public ResponseEntity<BaseResponse> patchStatusDisabled(@PathVariable String username) {
+    User editedUser = userService.updateUserStatus(toCmdUserStatus(username, "DISABLED"));
+    return ResponseEntity.ok(
+        toUserPatchByUsernameResponse(editedUser, "U00", "Success user disabled"));
+  }
+
+  @PatchMapping("/by-username/{username}/status-enabled")
+  @PreAuthorize("hasAnyRole('APP_ADM_U', 'APP_FEAT_U')")
+  public ResponseEntity<BaseResponse> patchStatusEnabled(@PathVariable String username) {
+    User editedUser = userService.updateUserStatus(toCmdUserStatus(username, "ENABLED"));
+    return ResponseEntity.ok(
+            toUserPatchByUsernameResponse(editedUser, "U00", "Success user enabled"));
+  }
+
+  private UpdateUserStatusCmd toCmdUserStatus(String username, String status) {
+    return new UpdateUserStatusCmd(username, status);
   }
 }

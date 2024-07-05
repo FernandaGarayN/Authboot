@@ -36,4 +36,6 @@ public interface UserPersistencePort {
   void updatePasswordRecoveryToken(String username, String token, LocalDateTime expiredAt);
 
   void updatePassword(String username, String cryptPassword);
+
+  void editStatus(UserPersistence foundUser);
 }
