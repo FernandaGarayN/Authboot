@@ -4,7 +4,6 @@ COPY app /home/authboot/app
 COPY commons /home/authboot/commons
 COPY core /home/authboot/core
 COPY infra /home/authboot/infra
-COPY config /home/authboot/config
 COPY lombok.config /home/authboot
 COPY pom.xml /home/authboot
 RUN mvn -f /home/authboot/pom.xml clean package -DskipTests
@@ -14,5 +13,6 @@ RUN addgroup -S authgroup && adduser -S authuser -G authgroup
 USER authuser
 WORKDIR /home/authuser
 EXPOSE 8090
+COPY config /home/authuser/config
 COPY --from=build /home/authboot/app/target/authboot-app-*.jar /home/authuser/app.jar
 ENTRYPOINT ["java", "-Duser.timezone=\"America/Santiago\"","-Djava.security.egd=file:/dev/./urandom","-jar","/home/authuser/app.jar"]
