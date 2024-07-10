@@ -4,6 +4,7 @@ COPY app /home/authboot/app
 COPY commons /home/authboot/commons
 COPY core /home/authboot/core
 COPY infra /home/authboot/infra
+COPY config /home/authboot/config
 COPY lombok.config /home/authboot
 COPY pom.xml /home/authboot
 RUN mvn -f /home/authboot/pom.xml clean package -DskipTests
